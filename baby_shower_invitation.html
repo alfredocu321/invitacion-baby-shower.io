@@ -1,0 +1,458 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@500;600&family=Lato:wght@300;400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .bs-wrap {
+    font-family: 'Lato', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: linear-gradient(135deg, #dce9f7 0%, #f0e8f5 50%, #e8f5f0 100%);
+  }
+
+  .envelope-scene { perspective: 1200px; width: 100%; max-width: 360px; }
+
+  /* ---- ENVELOPE ---- */
+  .envelope {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+  }
+
+  .env-body {
+    width: 100%;
+    height: 100%;
+    background: #f8f4ee;
+    border-radius: 8px;
+    border: 1.5px solid #d4c5a9;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 6px 24px rgba(100,140,200,0.18);
+  }
+
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: #efe7d8;
+    border-radius: 8px 8px 0 0;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border: 1.5px solid #d4c5a9;
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    z-index: 2;
+  }
+
+  .envelope.open .env-flap {
+    transform: rotateX(-180deg);
+  }
+
+  .env-seal {
+    width: 40px; height: 40px;
+    background: #b8d4f0;
+    border-radius: 50%;
+    border: 2px solid #8ab4d8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    z-index: 3;
+    position: absolute;
+    top: calc(50% - 20px);
+    transition: opacity 0.3s;
+  }
+  .envelope.open .env-seal { opacity: 0; }
+
+  .env-hint {
+    font-size: 12px;
+    color: #8a7a6a;
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 0.5px;
+    position: absolute;
+    bottom: 14px;
+  }
+
+  .env-deco {
+    position: absolute;
+    font-size: 11px;
+    color: #b0a898;
+  }
+  .env-deco.tl { top: 8px; left: 12px; }
+  .env-deco.tr { top: 8px; right: 12px; }
+  .env-deco.bl { bottom: 22px; left: 12px; }
+  .env-deco.br { bottom: 22px; right: 12px; }
+
+  /* ---- CARD ---- */
+  .card-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 1s ease;
+    width: 100%;
+  }
+  .card-wrapper.visible {
+    max-height: 2000px;
+  }
+
+  .card {
+    background: #fdfaf6;
+    border-radius: 16px;
+    border: 1.5px solid #d4c5a9;
+    padding: 28px 20px 24px;
+    margin-top: 16px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(100,140,200,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-bg-deco {
+    position: absolute;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(184,212,240,0.18);
+    top: -40px; right: -40px;
+  }
+  .card-bg-deco2 {
+    position: absolute;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(184,212,240,0.12);
+    bottom: 40px; left: -30px;
+  }
+
+  .card-badge {
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .badge-line {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .badge-line span { width: 40px; height: 1px; background: #c4b8a8; }
+
+  .baby-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #3a5a8a;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .shower-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 34px;
+    font-weight: 700;
+    color: #8a6840;
+    line-height: 1.1;
+  }
+
+  .eleph-icon {
+    font-size: 54px;
+    text-align: center;
+    margin: 10px 0 6px;
+    display: block;
+  }
+
+  .invite-msg {
+    text-align: center;
+    font-size: 13px;
+    color: #7a6a5a;
+    line-height: 1.7;
+    margin: 12px 0;
+    font-style: italic;
+  }
+
+  .divider {
+    width: 60px; height: 1px;
+    background: #c4b8a8;
+    margin: 14px auto;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .info-item {
+    background: rgba(184,212,240,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+    border: 0.5px solid #c8d8ec;
+  }
+  .info-label {
+    font-size: 10px;
+    color: #8a9ab0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .info-value {
+    font-size: 13px;
+    color: #3a5a8a;
+    font-weight: 500;
+  }
+
+  .info-full {
+    background: rgba(184,212,240,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+    border: 0.5px solid #c8d8ec;
+    margin: 0 0 10px;
+  }
+
+  /* COUNTDOWN */
+  .countdown-section {
+    background: linear-gradient(135deg, #b8d4f0 0%, #d0e8ff 100%);
+    border-radius: 12px;
+    padding: 14px 12px;
+    margin: 16px 0;
+    text-align: center;
+    border: 0.5px solid #a0c0e0;
+  }
+  .countdown-label {
+    font-size: 11px;
+    color: #3a5a8a;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .countdown-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  .cbox {
+    background: white;
+    border-radius: 8px;
+    padding: 6px 10px;
+    min-width: 52px;
+    border: 0.5px solid #a0c0e0;
+  }
+  .cbox-num {
+    font-size: 22px;
+    font-weight: 600;
+    color: #3a5a8a;
+    line-height: 1;
+    font-family: 'Playfair Display', serif;
+  }
+  .cbox-unit {
+    font-size: 10px;
+    color: #7a9ab8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+  .countdown-msg {
+    font-size: 11px;
+    color: #3a5a8a;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* BUTTON */
+  .confirm-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #7aace0 0%, #5a8ec8 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .confirm-btn:active { transform: scale(0.98); }
+  .confirm-btn:hover { opacity: 0.9; }
+  .confirm-btn.confirmed {
+    background: linear-gradient(135deg, #7ac8a0 0%, #4aaa78 100%);
+  }
+
+  .stars-deco {
+    text-align: center;
+    font-size: 16px;
+    color: #b8d0ee;
+    margin: 8px 0 4px;
+    letter-spacing: 4px;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 14px;
+    font-style: italic;
+  }
+
+  /* Open envelope animation */
+  .env-card-rise {
+    transition: transform 0.6s ease;
+  }
+</style>
+
+<div class="bs-wrap">
+  <div class="envelope-scene">
+
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body">
+        <div class="env-flap" id="envFlap"></div>
+        <div class="env-seal" id="envSeal">🐘</div>
+        <div class="env-deco tl">✦</div>
+        <div class="env-deco tr">✦</div>
+        <div class="env-deco bl">⭐</div>
+        <div class="env-deco br">⭐</div>
+        <div class="env-hint" id="envHint">Toca para abrir ✉</div>
+      </div>
+    </div>
+
+    <div class="card-wrapper" id="cardWrapper">
+      <div class="card">
+        <div class="card-bg-deco"></div>
+        <div class="card-bg-deco2"></div>
+
+        <div class="card-badge">
+          <div class="badge-line">
+            <span></span>
+            <span style="font-size:13px; color:#a0b8d0; letter-spacing:2px;">✦ ✦ ✦</span>
+            <span></span>
+          </div>
+          <div class="baby-title">BABY</div>
+          <div class="shower-title">Shower</div>
+        </div>
+
+        <div class="eleph-icon">🐘</div>
+
+        <p class="invite-msg">
+          Con mucha alegría te invitamos a celebrar<br>
+          la llegada de nuestro pequeño 💙
+        </p>
+
+        <div class="stars-deco">★ ★ ★</div>
+        <div class="divider"></div>
+
+        <div class="info-full">
+          <div class="info-label">Mamá</div>
+          <div class="info-value" style="font-family:'Dancing Script',cursive; font-size:18px; color:#8a6840;">Nombre de la Mamá</div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">📅 Fecha</div>
+            <div class="info-value">Viernes<br>20 Jun 2026</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">🕐 Hora</div>
+            <div class="info-value">4:00 PM</div>
+          </div>
+        </div>
+
+        <div class="info-full">
+          <div class="info-label">📍 Lugar</div>
+          <div class="info-value">Dirección del evento<br><span style="font-size:11px; color:#8a9ab0;">Huánuco, Perú</span></div>
+        </div>
+
+        <div class="countdown-section">
+          <div class="countdown-label">⏳ Faltan para el gran día</div>
+          <div class="countdown-boxes">
+            <div class="cbox">
+              <div class="cbox-num" id="cd-days">--</div>
+              <div class="cbox-unit">días</div>
+            </div>
+            <div class="cbox">
+              <div class="cbox-num" id="cd-hours">--</div>
+              <div class="cbox-unit">horas</div>
+            </div>
+            <div class="cbox">
+              <div class="cbox-num" id="cd-mins">--</div>
+              <div class="cbox-unit">min</div>
+            </div>
+            <div class="cbox">
+              <div class="cbox-num" id="cd-secs">--</div>
+              <div class="cbox-unit">seg</div>
+            </div>
+          </div>
+          <div class="countdown-msg" id="cd-msg">¡Prepárate para celebrar!</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="invite-msg" style="font-size:12px;">
+          🎁 Lista de regalos disponible<br>
+          Te esperamos con mucho amor 💙
+        </p>
+
+        <button class="confirm-btn" id="confirmBtn" onclick="confirmAttendance()">
+          ✓ &nbsp; CONFIRMAR ASISTENCIA
+        </button>
+
+        <div class="footer-note">Por favor confirmar antes del 15 de junio</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openEnvelope() {
+    const env = document.getElementById('envelope');
+    if (env.classList.contains('open')) return;
+    env.classList.add('open');
+    document.getElementById('envHint').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('cardWrapper').classList.add('visible');
+    }, 600);
+  }
+
+  function confirmAttendance() {
+    const btn = document.getElementById('confirmBtn');
+    if (btn.classList.contains('confirmed')) return;
+    btn.classList.add('confirmed');
+    btn.textContent = '✓  ¡ASISTENCIA CONFIRMADA!';
+  }
+
+  function updateCountdown() {
+    const target = new Date('2026-06-20T16:00:00');
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '0';
+      document.getElementById('cd-hours').textContent = '0';
+      document.getElementById('cd-mins').textContent = '0';
+      document.getElementById('cd-secs').textContent = '0';
+      document.getElementById('cd-msg').textContent = '🎉 ¡Hoy es el gran día!';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('cd-days').textContent = days;
+    document.getElementById('cd-hours').textContent = hours;
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+    document.getElementById('cd-msg').textContent = days === 1 ? '¡Solo falta 1 día!' : `¡Solo faltan ${days} días!`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
