@@ -868,73 +868,69 @@
       </div>
     </div>
 
-    <script>
-      const envWrap = document.getElementById("envWrap");
-      const cardReveal = document.getElementById("cardReveal");
+   <script>
+  const envWrap = document.getElementById("envWrap");
+  const cardReveal = document.getElementById("cardReveal");
 
-      function openEnv() {
-        if (envWrap.classList.contains("open")) return;
-        envWrap.classList.add("open");
-        envWrap.setAttribute("aria-expanded", "true");
-        setTimeout(() => {
-          cardReveal.classList.add("visible");
-          setTimeout(() => {
-            cardReveal.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 300);
-        }, 650);
-      }
+  function openEnv() {
+    if (envWrap.classList.contains("open")) return;
+    envWrap.classList.add("open");
+    envWrap.setAttribute("aria-expanded", "true");
 
-      envWrap.addEventListener("click", openEnv);
-      envWrap.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openEnv();
-        }
-      });
+    // Crear y reproducir música al abrir
+    const bgMusic = new Audio("https://alfredocu321.github.io/invitacion-baby-shower.io/music.mp3");
+    bgMusic.loop = true;
+    bgMusic.play().catch(err => console.log("Autoplay bloqueado:", err));
 
-      function tick() {
-        const target = new Date("2026-06-20T16:00:00");
-        const now = new Date();
-        const diff = target - now;
+    setTimeout(() => {
+      cardReveal.classList.add("visible");
+      setTimeout(() => {
+        cardReveal.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    }, 650);
+  }
 
-        if (diff <= 0) {
-          ["cd-days", "cd-hours", "cd-mins", "cd-secs"].forEach(
-            (id) => (document.getElementById(id).textContent = "0"),
-          );
-          document.getElementById("cd-msg").textContent =
-            "🎉 ¡Hoy es el gran día!";
-          return;
-        }
+  envWrap.addEventListener("click", openEnv);
+  envWrap.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openEnv();
+    }
+  });
 
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
+  function tick() {
+    const target = new Date("2026-06-20T16:00:00");
+    const now = new Date();
+    const diff = target - now;
 
-        document.getElementById("cd-days").textContent = d;
-        document.getElementById("cd-hours").textContent = String(h).padStart(
-          2,
-          "0",
-        );
-        document.getElementById("cd-mins").textContent = String(m).padStart(
-          2,
-          "0",
-        );
-        document.getElementById("cd-secs").textContent = String(s).padStart(
-          2,
-          "0",
-        );
+    if (diff <= 0) {
+      ["cd-days", "cd-hours", "cd-mins", "cd-secs"].forEach(
+        (id) => (document.getElementById(id).textContent = "0"),
+      );
+      document.getElementById("cd-msg").textContent = "🎉 ¡Hoy es el gran día!";
+      return;
+    }
 
-        document.getElementById("cd-msg").textContent =
-          d === 1
-            ? "¡Solo falta 1 día!"
-            : d === 0
-              ? "¡Es mañana!"
-              : `¡Faltan ${d} días!`;
-      }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
 
-      tick();
-      setInterval(tick, 1000);
-    </script>
+    document.getElementById("cd-days").textContent = d;
+    document.getElementById("cd-hours").textContent = String(h).padStart(2, "0");
+    document.getElementById("cd-mins").textContent = String(m).padStart(2, "0");
+    document.getElementById("cd-secs").textContent = String(s).padStart(2, "0");
+
+    document.getElementById("cd-msg").textContent =
+      d === 1
+        ? "¡Solo falta 1 día!"
+        : d === 0
+          ? "¡Es mañana!"
+          : `¡Faltan ${d} días!`;
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
   </body>
 </html>
